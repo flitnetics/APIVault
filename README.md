@@ -4,7 +4,7 @@ I had a problem at authentication different API endpoints from different service
 This API Gateway returns a token when you send a POST request to /api/auth with a JSON format like below:
 
 ```json
-{ "email": "youremail"
+{ "email": "youremail",
   "password": "yourpassword"}
 ```
 
