@@ -241,8 +241,8 @@ func main() {
 	logSetup()
 
         router := httprouter.New()
-	router.GET("/", handleRequestAndRedirect)
-	router.POST("/api/auth", Authenticate)
+        router.POST("/api/auth", Authenticate)
+	router.GET("/*path", handleRequestAndRedirect)
 
 	// start server
 	// http.HandleFunc("/*", handleRequestAndRedirect)
