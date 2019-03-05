@@ -130,26 +130,7 @@ func parseRequestBody(request *http.Request) requestPayloadStruct {
 
 // Given a request send it to the appropriate url
 func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-        /*var user User
 
-	requestPayload := parseRequestBody(req)
-	email := requestPayload.Email
-	password := requestPayload.Password
-
-	db.DBCon.First(&user, "email = ?", email)
-	match := CheckPasswordHash(password, user.EncryptedPassword)
-        log.Println("Authentication Verified: ", match)
-
-	if match {
-          token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-            "nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
-          })
-
-          // Sign and get the complete encoded token as a string using the secret
-          tokenString, err := token.SignedString(hmacSampleSecret)
-
-          log.Println(tokenString, err)
-        } */
 	tokenString := req.Header.Get("Authorization")
 	if tokenString != "" {
 	  splitToken := strings.Split(tokenString, "Bearer ")
@@ -176,24 +157,6 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request, _ http
             res.WriteHeader(401)
           }
 	}
-
-	/*var url = "localhost:9999"
-	switch req.Host {
-          case "localhost:1338":
-            url = "https://whatshalal.com"
-          case "localhost:1339":
-	    url = "http://localhost:3000"
-          default:
-            url = "localhost:9999"
-        }
-
-	logRequestPayload(req, url)
-
-	//url := getProxyUrl(requestPayload.ProxyCondition)
-
-	//logRequestPayload(requestPayload, url)
-
-	serveReverseProxy(url, res, req) */
 }
 
 // Check Usernamd and Password and Authenticate
