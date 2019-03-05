@@ -1,0 +1,5 @@
+db:
+  adapter: mysql
+  name: api-gateway
+  user: devel
+  password: yourpassword
