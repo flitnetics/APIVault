@@ -14,6 +14,8 @@ Of course the hashes stored in your DB must be in BCrypt in order for this to wo
 
 There is no user registration endpoint yet, but since everything is redirected, you can register at your normal registration endpoint.
 
+Those using Ruby On Rails with Devise, using APIVault should work with your current database out of the box (users schema is the same) as long your still use Bcrypt (not Argon2)
+
 I am still testing this out on my own to see how if it can solve my problem.
 
 Part of this code is based on Reverse Proxy Demo at: https://github.com/bechurch/reverse-proxy-demo by https://github.com/bechurch
