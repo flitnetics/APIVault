@@ -143,10 +143,10 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 	  if verified == true {
             var url = "http//:localhost:9999"
             switch req.Host {
-              case "whatshalal.taqisystems.com":
+	      case "localhost:1338":
                 url = "https://whatshalal.com"
-              case "awesell.taqisystems.com":
-                url = "https://awesell.com"
+              case "localhost:1339":
+                url = "http://localhost:3000"
               default:
                 url = "http://localhost:9999"
             }
