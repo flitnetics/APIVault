@@ -17,7 +17,7 @@ func init(){
 
     dbConfig := config.Config.DB
 
-    DBCon, err = gorm.Open("mysql", fmt.Sprintf("%v:%v@tcp(localhost:3306)/%v?charset=utf8&parseTime=True&loc=Local", dbConfig.User, dbConfig.Password, dbConfig.Name))
+    DBCon, err = gorm.Open("mysql", fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8&parseTime=True&loc=Local", dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port, dbConfig.Name))
     DBCon.DB().Ping()
     DBCon.DB().SetMaxIdleConns(10)
     DBCon.DB().SetMaxOpenConns(100)

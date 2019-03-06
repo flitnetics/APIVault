@@ -8,6 +8,8 @@ var Config = struct {
                 Adapter  string `default:"mysql"`
                 User     string
                 Password string
+		Host     string
+		Port     int
         }
 
 	Secret struct {
