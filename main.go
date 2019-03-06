@@ -19,6 +19,7 @@ import (
         "goji.io"
         "goji.io/pat"
 	"./config"
+	"gopkg.in/yaml.v2"
 )
 
 /*
@@ -38,6 +39,14 @@ type User struct {
 
 type Token struct {
   AccessToken string `json:"access_token"`
+}
+
+type Servers struct {
+  Server []struct {
+    Name string `yaml:"name"`
+    Host string `yaml:"host"`
+    UrlEndpoint string `yaml:"url_endpoint"`
+  }
 }
 
 /*
@@ -136,6 +145,18 @@ func parseRequestBody(request *http.Request) requestPayloadStruct {
 
 // Given a request send it to the appropriate url
 func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
+        var servers Servers
+        data, err := ioutil.ReadFile("config/servers.yml")
+        if err != nil {
+          panic(err)
+        }
+
+        err = yaml.Unmarshal(data, &servers)
+        if err != nil {
+          panic(err)
+        }
+
+	//log.Println("%s", servers.Server[0].Host)
 
 	tokenString := req.Header.Get("Authorization")
 	if tokenString != "" {
@@ -145,19 +166,21 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 	  verified := VerifyToken(token)
 
 	  if verified {
-            var url = "http//:localhost:9999"
-            switch req.Host {
-	      case "localhost:1338":
-                url = "https://whatshalal.com"
-              case "localhost:1339":
-                url = "http://localhost:3000"
-              default:
-                url = "http://localhost:9999"
-            }
+	    var url = "http://localhost:9999"
 
-            logRequestPayload(req, url)
+            for index := 0; index < len(servers.Server); index++ {
+              if req.Host == servers.Server[index].Host {
+                url = servers.Server[index].UrlEndpoint
+                logRequestPayload(req, url)
+                serveReverseProxy(url, res, req)
+              }
 
-            serveReverseProxy(url, res, req)
+	      //log.Println("%d", index)
+	    }
+
+            //logRequestPayload(req, url)
+
+            //serveReverseProxy(url, res, req)
 	  } else {
             res.Header().Set("Content-Type", "application/json")
             res.WriteHeader(http.StatusUnauthorized)

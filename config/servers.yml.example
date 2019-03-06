@@ -1,0 +1,8 @@
+---
+server:
+  - name: first_server
+    host: domain1.com
+    url_endpoint: https://backend.domain1.com
+  - name: second_server
+    host: domain2.com
+    url_endpoint: https://backend.domain2.com
