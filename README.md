@@ -26,7 +26,6 @@ Part of this code is based on Reverse Proxy Demo at: https://github.com/bechurch
    then edit servers.yml which contains your *hostname* which is used to run APIVault, and the real backend server http://url_backendapi (need http:// or https://) in url_endpoint
 
    NOTE: You can use either *mysql*, *postgres* and *mssql* adapters, depending how your current data is stored. sqlite is not supported at the moment but you can modify the source to support it.
-3. if you want to change the port that binds APIVault runs you can simply run `export PORT="your-port-number"`, example `export PORT="8080"`
-4. go build
-5. upload APIVault binary and run it as a normal user (not root!)
+3. go build
+4. upload APIVault binary to your server and if you want to change the port that binds APIVault runs you can simply run `export PORT="your-port-number"`, example `export PORT="8080"` and _run it as a normal user privileges (not root!)_
 6. DONE!
