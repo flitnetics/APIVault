@@ -5,7 +5,10 @@ import (
         "fmt"
 
         "github.com/jinzhu/gorm"
+	_ "github.com/denisenkom/go-mssqldb"
         _ "github.com/jinzhu/gorm/dialects/mysql"
+        _ "github.com/jinzhu/gorm/dialects/postgres"
+        _ "github.com/jinzhu/gorm/dialects/mssql"
         "../config"
 )
 
