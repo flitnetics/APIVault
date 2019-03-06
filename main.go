@@ -18,6 +18,7 @@ import (
 	"./db"
         "goji.io"
         "goji.io/pat"
+	"./config"
 )
 
 /*
@@ -39,9 +40,6 @@ type Token struct {
   AccessToken string `json:"access_token"`
 }
 
-const secretKey = "YOLOSWAG"
-var hmacSampleSecret = []byte(secretKey)
-
 /*
 	Utilities
 */
@@ -54,6 +52,12 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
+func getSecret() []byte {
+  secretConfig := config.Config.Secret
+  secretKey := secretConfig.SecretKey
+  var hmacSampleSecret = []byte(secretKey)
+  return hmacSampleSecret
+}
 /*
 	Getters
 */
@@ -140,7 +144,7 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 
 	  verified := VerifyToken(token)
 
-	  if verified == true {
+	  if verified {
             var url = "http//:localhost:9999"
             switch req.Host {
 	      case "localhost:1338":
@@ -156,9 +160,12 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
             serveReverseProxy(url, res, req)
 	  } else {
             res.Header().Set("Content-Type", "application/json")
-            res.WriteHeader(401)
+            res.WriteHeader(http.StatusUnauthorized)
           }
 	}
+
+        res.Header().Set("Content-Type", "application/json")
+        res.WriteHeader(http.StatusUnauthorized)
 }
 
 // Check Usernamd and Password and Authenticate
@@ -180,6 +187,7 @@ func VerifyToken(tokenString string) bool {
       }
 
       // hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+      hmacSampleSecret := getSecret()
       return hmacSampleSecret, nil
   })
 
@@ -202,7 +210,7 @@ func Authenticate(res http.ResponseWriter, req *http.Request) {
 
   db.DBCon.First(&user, "email = ?", email)
   match := CheckPasswordHash(password, user.EncryptedPassword)
-  log.Println("Authentication Verified: ", match)
+  //log.Println("Authentication Verified: ", match)
 
   if match {
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -210,6 +218,7 @@ func Authenticate(res http.ResponseWriter, req *http.Request) {
       "exp": time.Now().Add(time.Hour * 72).Unix(),
     })
 
+    hmacSampleSecret := getSecret()
     // Sign and get the complete encoded token as a string using the secret
     tokenString, err := token.SignedString(hmacSampleSecret)
     userToken := Token{}
@@ -221,14 +230,14 @@ func Authenticate(res http.ResponseWriter, req *http.Request) {
     }
 
     // for debugging
-    //log.Println(tokenString, err)
+    // log.Println(tokenString, err)
     res.Header().Set("Content-Type", "application/json")
     res.WriteHeader(http.StatusOK)
     res.Write(authJson)
   } else {
     res.Header().Set("Content-Type", "application/json")
-    res.WriteHeader(401)
- }
+    res.WriteHeader(http.StatusUnauthorized)
+  }
 
   // for debugging
   //log.Printf("email: %s, password: %s", requestPayload.Email, requestPayload.Password)
