@@ -23,7 +23,7 @@ Part of this code is based on Reverse Proxy Demo at: https://github.com/bechurch
 ## Installation steps
 1. Clone this repository
 2. Edit database.yml, include your database credentials, edit secrets.yml (if you haverails you can run `rake secret` to generate one) - this is need for JWT Token.
-   then edit servers.yml which contains your domain *hostname* which is used to run APIVault, and the real backend server http://url_backendapi (need http:// or https://) in url_endpoint
+   then edit servers.yml which contains your *hostname* which is used to run APIVault, and the real backend server http://url_backendapi (need http:// or https://) in url_endpoint
 3. if you want to change the port that binds APIVault runs you can simply run `export PORT="your-port-number"`, example `export PORT="8080"`
 4. go build
 5. upload APIVault binary and run it as a normal user (not root!)
