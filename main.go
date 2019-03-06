@@ -146,7 +146,7 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
               case "localhost:1338":
                 url = "https://whatshalal.com"
               case "localhost:1339":
-                url = "https://awesell.com"
+                url = "http://localhost:3000"
               default:
                 url = "localhost:9999"
             }
