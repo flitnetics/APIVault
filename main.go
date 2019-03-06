@@ -141,14 +141,14 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 	  verified := VerifyToken(token)
 
 	  if verified == true {
-            var url = "localhost:9999"
+            var url = "http//:localhost:9999"
             switch req.Host {
-              case "localhost:1338":
+              case "whatshalal.taqisystems.com":
                 url = "https://whatshalal.com"
-              case "localhost:1339":
-                url = "http://localhost:3000"
+              case "awesell.taqisystems.com":
+                url = "https://awesell.com"
               default:
-                url = "localhost:9999"
+                url = "http://localhost:9999"
             }
 
             logRequestPayload(req, url)
