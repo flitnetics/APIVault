@@ -12,10 +12,12 @@ import (
 	"fmt"
 	"time"
 	"strings"
+        "runtime"
 	"golang.org/x/crypto/bcrypt"
         "github.com/dgrijalva/jwt-go"
 	"./db"
-        "github.com/julienschmidt/httprouter"
+        "goji.io"
+        "goji.io/pat"
 )
 
 /*
@@ -129,7 +131,7 @@ func parseRequestBody(request *http.Request) requestPayloadStruct {
 }
 
 // Given a request send it to the appropriate url
-func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 
 	tokenString := req.Header.Get("Authorization")
 	if tokenString != "" {
@@ -144,7 +146,7 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request, _ http
               case "localhost:1338":
                 url = "https://whatshalal.com"
               case "localhost:1339":
-                url = "http://localhost:3000"
+                url = "https://awesell.com"
               default:
                 url = "localhost:9999"
             }
@@ -191,7 +193,7 @@ func VerifyToken(tokenString string) bool {
 }
 
 // Authenticate
-func Authenticate(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+func Authenticate(res http.ResponseWriter, req *http.Request) {
   var user User
   requestPayload := parseRequestBody(req)
 
@@ -239,14 +241,23 @@ func Authenticate(res http.ResponseWriter, req *http.Request, _ httprouter.Param
 func main() {
 	// Log setup values
 	logSetup()
+        runtime.GOMAXPROCS(runtime.NumCPU()) // Use all CPU Cores
 
-        router := httprouter.New()
-        router.POST("/api/auth", Authenticate)
-	router.GET("/*path", handleRequestAndRedirect)
+        mux := goji.NewMux()
+	// authentication routes
+        mux.HandleFunc(pat.Post("/api/auth"), Authenticate)
 
+	// all others, proxy it over!
+        mux.HandleFunc(pat.Get("/*"), handleRequestAndRedirect)
+	mux.HandleFunc(pat.Post("/*"), handleRequestAndRedirect)
+	mux.HandleFunc(pat.Options("/*"), handleRequestAndRedirect)
+	mux.HandleFunc(pat.Head("/*"), handleRequestAndRedirect)
+	mux.HandleFunc(pat.Put("/*"), handleRequestAndRedirect)
+	mux.HandleFunc(pat.Delete("/*"), handleRequestAndRedirect)
+	mux.HandleFunc(pat.Patch("/*"), handleRequestAndRedirect)
 	// start server
 	// http.HandleFunc("/*", handleRequestAndRedirect)
-	if err := http.ListenAndServe(getListenAddress(), router); err != nil {
+	if err := http.ListenAndServe(getListenAddress(), mux); err != nil {
 		panic(err)
 	}
 
