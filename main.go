@@ -32,6 +32,7 @@ type requestPayloadStruct struct {
 }
 
 type User struct {
+  Id int
   Email string
   EncryptedPassword string `gorm:"column:encrypted_password"`
   Password string `json:"password"`
@@ -62,9 +63,8 @@ func getEnv(key, fallback string) string {
 }
 
 func getSecret() []byte {
-  secretConfig := config.Config.Secret
-  secretKey := secretConfig.SecretKey
-  var hmacSampleSecret = []byte(secretKey)
+  secretKey := config.Config.Secret.Key
+  hmacSampleSecret := []byte(secretKey)
   return hmacSampleSecret
 }
 /*
@@ -107,6 +107,7 @@ func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request
 	req.URL.Host = url.Host
 	req.URL.Scheme = url.Scheme
 	req.Header.Set("X-Forwarded-Host", req.Header.Get("Host"))
+	req.Header.Set("Authorization", req.Header.Get("Authorization"))
 	req.Host = url.Host
 
 	// Note that ServeHttp is non blocking and uses a go routine under the hood
@@ -210,12 +211,13 @@ func VerifyToken(tokenString string) bool {
       }
 
       // hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-      hmacSampleSecret := getSecret()
+      hmacSampleSecret := getSecret();
       return hmacSampleSecret, nil
   })
 
   if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-    fmt.Println(claims["nbf"])
+    //fmt.Println(claims["nbf"])
+    fmt.Println(claims["sub"])
     return true
   } else {
     fmt.Println(err)
@@ -237,7 +239,8 @@ func Authenticate(res http.ResponseWriter, req *http.Request) {
 
   if match {
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-      "nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+      //"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+      "sub": user.Id,
       "exp": time.Now().Add(time.Hour * 72).Unix(),
     })
 

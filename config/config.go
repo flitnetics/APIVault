@@ -13,7 +13,7 @@ var Config = struct {
         }
 
 	Secret struct {
-                SecretKey  string
+                Key  string
         }
 
 }{}
