@@ -3,6 +3,8 @@ server:
   - name: first_microservice
     host: api.microservice1.domain1.com
     url_endpoint: https://backendprotectedapi.microservice1.domain.com
+    secret: your-randomly-generated-string-keep-this-secure!
   - name: second_microservice
     host: api.microservice2.domain.com
     url_endpoint: https://backendprotectedapi.microservice2.domain.com
+    secret: your-randomly-generated-string-keep-this-secure!

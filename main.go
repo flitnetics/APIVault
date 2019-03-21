@@ -18,7 +18,6 @@ import (
 	"./db"
         "goji.io"
         "goji.io/pat"
-	"./config"
 	"gopkg.in/yaml.v2"
 )
 
@@ -47,6 +46,7 @@ type Servers struct {
     Name string `yaml:"name"`
     Host string `yaml:"host"`
     UrlEndpoint string `yaml:"url_endpoint"`
+    Secret string `yaml:"secret"`
   }
 }
 
@@ -62,11 +62,6 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
-func getSecret() []byte {
-  secretKey := config.Config.Secret.Key
-  hmacSampleSecret := []byte(secretKey)
-  return hmacSampleSecret
-}
 /*
 	Getters
 */
@@ -164,7 +159,7 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 	  splitToken := strings.Split(tokenString, "Bearer ")
 	  token := splitToken[1]
 
-	  verified := VerifyToken(token)
+	  verified := VerifyToken(token, req.Host)
 
 	  if verified {
 	    var url = "http://localhost:9999"
@@ -198,7 +193,7 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func VerifyToken(tokenString string) bool {
+func VerifyToken(tokenString string, host string) bool {
 
   // Parse takes the token string and a function for looking up the key. The latter is especially
   // useful if you use multiple keys for your application.  The standard is to use 'kid' in the
@@ -211,8 +206,26 @@ func VerifyToken(tokenString string) bool {
       }
 
       // hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-      hmacSampleSecret := getSecret();
-      return hmacSampleSecret, nil
+      var servers Servers
+      data, err := ioutil.ReadFile("config/servers.yml")
+      if err != nil {
+        panic(err)
+      }
+
+      err = yaml.Unmarshal(data, &servers)
+      if err != nil {
+        panic(err)
+      }
+
+      for index := 0; index < len(servers.Server); index++ {
+        if host == servers.Server[index].Host {
+          hmacSampleSecret := []byte(servers.Server[index].Secret)
+          return hmacSampleSecret, nil
+        }
+        //log.Println("%d", index)
+      }
+
+      return nil, nil
   })
 
   if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -244,22 +257,39 @@ func Authenticate(res http.ResponseWriter, req *http.Request) {
       "exp": time.Now().Add(time.Hour * 72).Unix(),
     })
 
-    hmacSampleSecret := getSecret()
-    // Sign and get the complete encoded token as a string using the secret
-    tokenString, err := token.SignedString(hmacSampleSecret)
-    userToken := Token{}
-    userToken.AccessToken = tokenString
-
-    authJson, err := json.Marshal(userToken)
+    var servers Servers
+    data, err := ioutil.ReadFile("config/servers.yml")
     if err != nil {
       panic(err)
     }
 
-    // for debugging
-    // log.Println(tokenString, err)
-    res.Header().Set("Content-Type", "application/json")
-    res.WriteHeader(http.StatusOK)
-    res.Write(authJson)
+    err = yaml.Unmarshal(data, &servers)
+    if err != nil {
+      panic(err)
+    }
+
+    for index := 0; index < len(servers.Server); index++ {
+      if req.Host == servers.Server[index].Host {
+        hmacSampleSecret := []byte(servers.Server[index].Secret)
+
+        // Sign and get the complete encoded token as a string using the secret
+        tokenString, err := token.SignedString(hmacSampleSecret)
+        userToken := Token{}
+        userToken.AccessToken = tokenString
+
+        authJson, err := json.Marshal(userToken)
+        if err != nil {
+          panic(err)
+        }
+
+        // for debugging
+        // log.Println(tokenString, err)
+        res.Header().Set("Content-Type", "application/json")
+        res.WriteHeader(http.StatusOK)
+        res.Write(authJson)
+      }
+    }
+
   } else {
     res.Header().Set("Content-Type", "application/json")
     res.WriteHeader(http.StatusUnauthorized)

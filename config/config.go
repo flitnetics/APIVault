@@ -12,14 +12,10 @@ var Config = struct {
 		Port     int
         }
 
-	Secret struct {
-                Key  string
-        }
-
 }{}
 
 func init() {
-        if err := configor.Load(&Config, "config/database.yml", "config/secrets.yml"); err != nil {
+        if err := configor.Load(&Config, "config/database.yml"); err != nil {
                 panic(err)
         }
 }
