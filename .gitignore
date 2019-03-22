@@ -2,3 +2,5 @@ config/database.yml
 config/secrets.yml
 config/servers.yml
 api-gateway
+*.swo
+*.swp
