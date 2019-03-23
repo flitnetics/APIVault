@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	_ "net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -20,6 +21,8 @@ import (
         "goji.io"
         "goji.io/pat"
 	"gopkg.in/yaml.v2"
+        _ "os/signal"
+	_ "syscall"
 )
 
 /*
@@ -27,6 +30,7 @@ import (
 */
 
 type requestPayloadStruct struct {
+	Username string `json:"username"`
 	Email string `json:"email"`
 	Password string `json:"password"`
 }
@@ -34,6 +38,7 @@ type requestPayloadStruct struct {
 type User struct {
   Id int
   Email string
+  Username string
   EncryptedPassword string `gorm:"column:encrypted_password"`
   Password string `json:"password"`
 }
@@ -247,10 +252,11 @@ func Authenticate(res http.ResponseWriter, req *http.Request) {
   var user User
   requestPayload := parseRequestBody(req)
 
-  email := requestPayload.Email
+  username := requestPayload.Username
   password := requestPayload.Password
+  email := requestPayload.Email
 
-  db.DBCon.First(&user, "email = ?", email)
+  db.DBCon.Where("username = ?", username).Or("email = ?", email).First(&user)
   match := CheckPasswordHash(password, user.EncryptedPassword)
   //log.Println("Authentication Verified: ", match)
 
@@ -309,9 +315,29 @@ func main() {
 	mux.HandleFunc(pat.Delete("/*"), handleRequestAndRedirect)
 	mux.HandleFunc(pat.Patch("/*"), handleRequestAndRedirect)
 	// start server
-	// http.HandleFunc("/*", handleRequestAndRedirect)
+	http.HandleFunc("/*", handleRequestAndRedirect)
 	if err := http.ListenAndServe(getListenAddress(), mux); err != nil {
 		panic(err)
 	}
 
+	// if you want to use UNIX sockets
+	/*
+	unixListener, err := net.Listen("unix", "/tmp/apivault.sock")
+	if err != nil {
+		panic(err)
+	}
+
+	sigc := make(chan os.Signal, 1)
+        signal.Notify(sigc, os.Interrupt, os.Kill, syscall.SIGTERM)
+        go func(c chan os.Signal) {
+          // Wait for a SIGINT or SIGKILL:
+          sig := <-c
+          log.Printf("Caught signal %s: shutting down.", sig)
+          // Stop listening (and unlink the socket if unix type):
+          unixListener.Close()
+          // And we're done:
+          os.Exit(0)
+        }(sigc)
+
+	http.Serve(unixListener, mux) */
 }
