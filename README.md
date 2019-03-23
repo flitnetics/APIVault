@@ -32,5 +32,5 @@ In a nuthell:
    NOTE: You can use either *mysql*, *postgres* and *mssql* adapters, depending how your current data is stored. sqlite is not supported at the moment but you can modify the source to support it.
 3. go build
 4. upload APIVault binary to your server and if you want to change the port that binds APIVault runs you can simply run `export PORT="your-port-number"`, example `export PORT="8080"` and _run it as a normal user privileges (not root!)_
-5. copy config config/ folder in the same directory as APIVault binary
+5. copy config config/ folder in the same directory as APIVault binary in your server.
 6. DONE!
