@@ -20,6 +20,8 @@ I am still testing this out on my own to see how if it can solve my problem.
 
 Part of this code is based on Reverse Proxy Demo at: https://github.com/bechurch/reverse-proxy-demo by https://github.com/bechurch
 
+Detailed information [HERE](http://unrealasia.net/index.html#2019-03-22-12)
+
 In a nutshell:
 
 ![summary](https://raw.githubusercontent.com/muhammadn/APIVault/master/API_gateway.png)
