@@ -315,7 +315,7 @@ func main() {
 	mux.HandleFunc(pat.Delete("/*"), handleRequestAndRedirect)
 	mux.HandleFunc(pat.Patch("/*"), handleRequestAndRedirect)
 	// start server
-	http.HandleFunc("/*", handleRequestAndRedirect)
+	//http.HandleFunc("/*", handleRequestAndRedirect)
 	if err := http.ListenAndServe(getListenAddress(), mux); err != nil {
 		panic(err)
 	}
