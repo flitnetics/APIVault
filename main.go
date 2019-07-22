@@ -47,6 +47,10 @@ type Token struct {
   AccessToken string `json:"access_token"`
 }
 
+type Register struct {
+  Status string `json:"status"`
+}
+
 type Servers struct {
   Server []struct {
     Name string `yaml:"name"`
@@ -247,6 +251,50 @@ func VerifyToken(tokenString string, host string) (interface{}, bool) {
   }
 }
 
+func Registration(res http.ResponseWriter, req *http.Request) {
+  var user User
+  requestPayload := parseRequestBody(req)
+
+  username := requestPayload.Username
+  password := requestPayload.Password
+  email := requestPayload.Email
+
+  if db.DBCon.Where("username = ?", username).Or("email = ?", email).First(&user).RecordNotFound() {
+    register := Register{}
+    register.Status = "User already registered"
+
+    authJson, err := json.Marshal(register)
+    if err != nil {
+      panic(err)
+    }
+
+    res.Header().Set("Content-Type", "application/json")
+    res.WriteHeader(http.StatusOK)
+    res.Write(authJson)
+  } else {
+    encryptedHash, err := bcrypt.GenerateFromPassword([]byte(password), int(11))
+    if err != nil {
+      panic(err)
+    }
+
+    user := User{Email: email, Password: string(encryptedHash), Username: username}
+    db.DBCon.NewRecord(user)
+
+    register := Register{}
+    register.Status = "Registration successful"
+
+    authJson, err := json.Marshal(register)
+    if err != nil {
+      panic(err)
+    }
+
+    res.Header().Set("Content-Type", "application/json")
+    res.WriteHeader(http.StatusOK)
+    res.Write(authJson)
+  }
+
+} 
+
 // Authenticate
 func Authenticate(res http.ResponseWriter, req *http.Request) {
   var user User
@@ -305,6 +353,7 @@ func main() {
         mux := goji.NewMux()
 	// authentication routes
         mux.HandleFunc(pat.Post("/api/auth"), Authenticate)
+        mux.HandleFunc(pat.Post("/api/auth/register"), Registration)
 
 	// all others, proxy it over!
         mux.HandleFunc(pat.Get("/*"), handleRequestAndRedirect)

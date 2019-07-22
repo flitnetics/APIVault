@@ -12,7 +12,9 @@ Then you will get a reply with JSON Web Token in "access_token" field. Use this 
 
 Of course the hashes stored in your DB must be in BCrypt in order for this to work. The important thing is in the database that you should have is "users" table with "email" and "encrypted_password" columns.
 
-There is no user registration endpoint yet, but since everything is redirected, you can register at your normal registration endpoint.
+~~There is no user registration endpoint yet, but since everything is redirected, you can register at your normal registration endpoint.~~
+
+**You can now register at /api/auth/register endpoint**
 
 Those using Ruby On Rails with Devise, using APIVault should work with your current database out of the box (users schema is the same) as long your still use Bcrypt (not Argon2)
 
