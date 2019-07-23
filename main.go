@@ -254,7 +254,6 @@ func VerifyToken(tokenString string, host string) (interface{}, bool) {
 func Registration(res http.ResponseWriter, req *http.Request) {
   var user User
   requestPayload := parseRequestBody(req)
-
   username := requestPayload.Username
   password := requestPayload.Password
   email := requestPayload.Email
@@ -277,7 +276,7 @@ func Registration(res http.ResponseWriter, req *http.Request) {
       panic(err)
     }
 
-    user := User{Email: email, Password: string(encryptedHash), Username: username}
+    user := User{Email: email, Password: string(encryptedHash), Username: email}
     db.DBCon.NewRecord(user)
 
     register := Register{}
