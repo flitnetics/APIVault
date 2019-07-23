@@ -15,6 +15,11 @@ Of course the hashes stored in your DB must be in BCrypt in order for this to wo
 ~~There is no user registration endpoint yet, but since everything is redirected, you can register at your normal registration endpoint.~~
 
 **You can now register at /api/auth/register endpoint**
+Payload for registration:
+```
+{"email":"email@domain.com",
+ "password: "thepassword"}
+```
 
 Those using Ruby On Rails with Devise, using APIVault should work with your current database out of the box (users schema is the same) as long your still use Bcrypt (not Argon2)
 
