@@ -4,3 +4,4 @@ config/servers.yml
 api-gateway
 *.swo
 *.swp
+APIVault
