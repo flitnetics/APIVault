@@ -2,7 +2,9 @@
 This API Gateway returns a token when you send a POST request to /api/auth with a JSON format like below:
 
 **Authentication**
+
 POST /api/auth
+
 ```json
 { "email": "youremail",
   "password": "yourpassword"}
@@ -13,8 +15,9 @@ Then you will get a reply with JSON Web Token in "access_token" field. Use this 
 Of course the hashes stored in your DB must be in BCrypt in order for this to work. The important thing is in the database that you should have is "users" table with "email" and "encrypted_password" columns.
 
 **Registration**
-Payload for registration:
+
 POST /api/auth/register
+
 ```
 {"email":"email@domain.com",
  "password: "thepassword"}
