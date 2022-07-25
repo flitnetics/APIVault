@@ -25,7 +25,7 @@ POST /api/auth/register
 
 Those using Ruby On Rails with Devise, using APIVault should work with your current database out of the box (users schema is the same) as long your still use Bcrypt (not Argon2)
 
-Generic configurable setup for customised configuration other than RoR/DEvice with different users table/schema is still in WIP.
+Generic configurable setup for customised configuration other than Ruby On Rails/Devise with different users table/schema is still in WIP.
 
 Detailed information [HERE](http://unrealasia.net/index.html#2019-03-22-12)
 
