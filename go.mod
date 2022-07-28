@@ -6,6 +6,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.12.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/flitnetics/APIVault v0.0.0-20220725070121-95c3bf1a76ed
+	github.com/golang-jwt/jwt v3.2.1+incompatible // indirect
 	github.com/jinzhu/configor v1.2.1
 	github.com/jinzhu/gorm v1.9.16
 	goji.io v2.0.2+incompatible
