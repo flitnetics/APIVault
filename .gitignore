@@ -1,6 +1,6 @@
 api-gateway
 *.swo
 *.swp
-APIVault
+/APIVault
 apivault.yml
 microservices.yml
