@@ -16,10 +16,11 @@ var Config = struct {
                 Key      string
         }
 
+	UnixSocket       bool `default:"false"`
 }{}
 
 func init() {
-        if err := configor.Load(&Config, "config/database.yml", "config/secrets.yml"); err != nil {
+        if err := configor.Load(&Config, "apivault.yml"); err != nil {
                 panic(err)
         }
 }
