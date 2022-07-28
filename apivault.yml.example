@@ -1,4 +1,17 @@
 ---
+# if you want to use socket, set this to true
+unixsocket: false
+db:
+  adapter: mysql
+  host: localhost
+  port: 3306
+  name: api-gateway
+  user: devel
+  password: yourpassword
+# API Gateway JWT Secret (not microservice!)
+secret:
+  key: abc123
+# Microservice Specific!
 server:
   - name: first_microservice
     host: api.microservice1.domain1.com
