@@ -1,5 +1,6 @@
 ---
 # if you want to use socket, set this to true
+# socket will be /tmp/apivault.sock
 unixsocket: false
 db:
   adapter: mysql
