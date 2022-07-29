@@ -42,7 +42,7 @@ In a nutshell:
 ![summary](https://raw.githubusercontent.com/muhammadn/APIVault/master/API_gateway.png)
 
 ## Installation steps
-1. Download the binaries (according to the version you need) - at the right side of this page.
+1. Download the binaries (according to the version you need) - from the right side of this page.
 2. gzip and untar the file and upload the `APIVault` binary to your server
 3. Copy apivault.yml.example and microservices.yaml.example to the same folder as your `APIVault` binary
 3. Edit apivault.yml, include your database credentials, jwt secret for APIVault - this is needed for JWT Token.
