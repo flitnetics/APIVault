@@ -3,11 +3,13 @@ This API Gateway returns a token when you send a POST request to /api/auth with 
 
 **Authentication**
 
-POST /api/auth
+> POST /api/auth
 
 ```json
-{ "email": "youremail",
-  "password": "yourpassword"}
+{ 
+  "email": "youremail",
+  "password": "yourpassword"
+}
 ```
 
 Then you will get a reply with JSON Web Token in "access_token" field. Use this in your Authorization header (with "Bearer ").
@@ -16,11 +18,13 @@ Of course the hashes stored in your DB must be in BCrypt in order for this to wo
 
 **Registration**
 
-POST /api/auth/register
+> POST /api/auth/register
 
-```
-{"email":"email@domain.com",
- "password: "thepassword"}
+```json
+{
+  "email": "email@domain.com",
+  "password: "thepassword"
+}
 ```
 
 Those using Ruby On Rails with Devise, using APIVault should work with your current database out of the box (users schema is the same) as long your still use Bcrypt (not Argon2)
