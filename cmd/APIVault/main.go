@@ -164,59 +164,57 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
         var servers Servers
         data, err := ioutil.ReadFile("microservices.yml")
         if err != nil {
-          panic(err)
+                panic(err)
         }
 
         err = yaml.Unmarshal(data, &servers)
         if err != nil {
-          panic(err)
+                panic(err)
         }
 
 	tokenString := req.Header.Get("Authorization")
 	if tokenString != "" {
-	  splitToken := strings.Split(tokenString, "Bearer ")
-	  token := splitToken[1]
+	        splitToken := strings.Split(tokenString, "Bearer ")
+	        token := splitToken[1]
 
-	  claim, verified := VerifyToken(token, req.Host)
+		// verify the token that is going to be authenticated by APIVault
+	        claim, verified := VerifyToken(token)
 
-	  if verified {
+		// if APIVault verifies it, continue passing the request
+	        if verified {
 
-            for index := 0; index < len(servers.Server); index++ {
-              if req.Host == servers.Server[index].Host {
-                url := servers.Server[index].UrlEndpoint
+                        for index := 0; index < len(servers.Server); index++ {
+                                if req.Host == servers.Server[index].Host {
+                                        url := servers.Server[index].UrlEndpoint
+		                                log.Println("Host: ", req.Host)
 
-                token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-                  //"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
-                  "sub": claim,
-                  "exp": time.Now().Add(time.Hour * 72).Unix(),
-                })
+                                                token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+                                                //"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+                                                        "sub": claim,
+                                                        "exp": time.Now().Add(time.Hour * 72).Unix(),
+                                                })
 
-                hmacSampleSecret := []byte(servers.Server[index].Secret)
+                                                hmacSampleSecret := []byte(servers.Server[index].Secret)
 
-                // Sign and get the complete encoded token as a string using the secret
-                tokenString, err := token.SignedString(hmacSampleSecret)
-                if err != nil {
-                  panic(err)
-                }
+                                                // Sign and get the complete encoded token as a string using the secret
+                                                tokenString, err := token.SignedString(hmacSampleSecret)
+                                                if err != nil {
+                                                        panic(err)
+                                                }
 
-                logRequestPayload(req, url)
-                serveReverseProxy(url, tokenString, res, req)
-              }
+                                                logRequestPayload(req, url)
+                                                serveReverseProxy(url, tokenString, res, req)
+                                }
 
-	      //log.Println("%d", index)
-	    }
-
-            //logRequestPayload(req, url)
-
-            //serveReverseProxy(url, res, req)
-	  } else {
-            res.Header().Set("Content-Type", "application/json")
-            res.WriteHeader(http.StatusUnauthorized)
-          }
+	                        //log.Println("%d", index)
+	                }
+	       } else {
+		       // Unable to process request (should it be 401? because i think this avoids confusion if the 401 below
+                       res.Header().Set("Content-Type", "application/json")
+                       res.WriteHeader(http.StatusUnprocessableEntity)
+	               res.Write(nil)
+               }
 	}
-
-        res.Header().Set("Content-Type", "application/json")
-        res.WriteHeader(http.StatusUnauthorized)
 }
 
 // Check Usernamd and Password and Authenticate
@@ -225,7 +223,7 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func VerifyToken(tokenString string, host string) (interface{}, bool) {
+func VerifyToken(tokenString string) (interface{}, bool) {
 
   // Parse takes the token string and a function for looking up the key. The latter is especially
   // useful if you use multiple keys for your application.  The standard is to use 'kid' in the
@@ -243,8 +241,6 @@ func VerifyToken(tokenString string, host string) (interface{}, bool) {
   })
 
   if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-    //fmt.Println(claims["nbf"])
-    fmt.Println(claims["sub"])
     return claims["sub"], true
   } else {
     fmt.Println(err)
@@ -255,11 +251,10 @@ func VerifyToken(tokenString string, host string) (interface{}, bool) {
 func Registration(res http.ResponseWriter, req *http.Request) {
   var user User
   requestPayload := parseRequestBody(req)
-  username := requestPayload.Username
   password := requestPayload.Password
   email := requestPayload.Email
 
-  if db.DBCon.Where("username = ?", username).Or("email = ?", email).First(&user).RecordNotFound() {
+  if db.DBCon.Where("email = ?", email).First(&user).RecordNotFound() {
     register := Register{}
     register.Status = "User already registered"
 
@@ -300,12 +295,12 @@ func Authenticate(res http.ResponseWriter, req *http.Request) {
   var user User
   requestPayload := parseRequestBody(req)
 
-  username := requestPayload.Username
   password := requestPayload.Password
   email := requestPayload.Email
 
-  db.DBCon.Where("email = ?", email).Or("username = ?", username).First(&user)
-  match := CheckPasswordHash(password, user.EncryptedPassword) 
+  db.DBCon.Where("email = ?", email).First(&user)
+
+  match := CheckPasswordHash(password, user.Password)
   //log.Println("Authentication Verified: ", match)
 
   if match {

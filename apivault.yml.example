@@ -2,7 +2,6 @@
 # if you want to use socket, set this to true
 # socket will be /tmp/apivault.sock
 unixsocket: false
-fortify: false
 db:
   adapter: mysql
   host: localhost
@@ -13,3 +12,9 @@ db:
 # API Gateway JWT Secret (not microservice!)
 secret:
   key: abc123
+# Database user username/email and password column mapping
+table:
+  name: users
+  column:
+    user: email
+    password: password

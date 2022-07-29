@@ -32,7 +32,7 @@ func init(){
     DBCon.DB().Ping()
     DBCon.DB().SetMaxIdleConns(10)
     DBCon.DB().SetMaxOpenConns(100)
-    defer DBCon.Close()
+//    defer DBCon.Close()
     DBCon.LogMode(true) // SQL Logging
 
     // Stop running if there are problems connecting to database
