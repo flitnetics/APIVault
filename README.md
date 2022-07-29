@@ -42,11 +42,10 @@ In a nutshell:
 **Docker Image is WIP - We intend to release Kubernetes support as that makes sense**
 
 ## Installation steps
-1. Clone this repository
-2. Edit apivault.yml, include your database credentials, secrets.yml (if you have rails you can run `rake secret` to generate one) - this is needed for JWT Token.
-3. Edit microservices.yml which contains your *hostname* which is used to run APIVault, and the real backend server http://url_backendapi (need http:// or https://) in url_endpoint and your microservice's JWT secrets. (NOTE: This is different than APIVault's)
-4. go build
-5. upload APIVault binary to your server and if you want to change the port that binds APIVault runs you can simply run `export PORT="your-port-number"`, example `export PORT="8080"`
+1. Download the binaries (according to the version you need) - at the right side of this page.
+2. gzip and untar the file and upload the `APIVault` binary to your server
+3. Edit apivault.yml, include your database credentials, secrets.yml (if you have rails you can run `rake secret` to generate one) - this is needed for JWT Token.
+4. Edit microservices.yml which contains your *hostname* which is used to run APIVault, and the real backend server http://url_backendapi (need http:// or https://) in url_endpoint and your microservice's JWT secrets. (NOTE: This is different than APIVault's)
 
 ## Configuration
 There are two steps: You need to configure APIVault and Microservice-specific configuration
