@@ -10,8 +10,9 @@ db:
   user: devel
   password: yourpassword
 # API Gateway JWT Secret (not microservice!)
-secret:
-  key: abc123
+jwt:
+  secret: abc123
+  ttl: 72
 # Database user username/email and password column mapping
 # set what is your table name, login column (example: "email" or "username")
 table:

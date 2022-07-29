@@ -12,8 +12,9 @@ var Config = struct {
 		Port     int
         }
 
-	Secret  struct {
-                Key      string
+	Jwt  struct {
+                Secret      string
+		Ttl         int
         }
 
 	UnixSocket       bool `default:"false"`

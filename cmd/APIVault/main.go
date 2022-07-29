@@ -237,7 +237,7 @@ func VerifyToken(tokenString string) (interface{}, bool) {
       }
 
       // hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-      hmacSampleSecret := getSecret(config.Config.Secret.Key)
+      hmacSampleSecret := getSecret(config.Config.Jwt.Secret)
       return hmacSampleSecret, nil
   })
 
@@ -308,10 +308,10 @@ func Authenticate(res http.ResponseWriter, req *http.Request) {
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
       //"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
       "sub": user.Id,
-      "exp": time.Now().Add(time.Hour * 72).Unix(),
+      "exp": time.Now().Add(time.Hour * time.Duration(config.Config.Jwt.Ttl)).Unix(),
     })
 
-    hmacSampleSecret := getSecret(config.Config.Secret.Key)
+    hmacSampleSecret := getSecret(config.Config.Jwt.Secret)
 
     // Sign and get the complete encoded token as a string using the secret
     tokenString, err := token.SignedString(hmacSampleSecret)
