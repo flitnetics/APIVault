@@ -39,8 +39,6 @@ In a nutshell:
 
 ![summary](https://raw.githubusercontent.com/muhammadn/APIVault/master/API_gateway.png)
 
-**Docker Image is WIP - We intend to release Kubernetes support as that makes sense**
-
 ## Installation steps
 1. Download the binaries (according to the version you need) - at the right side of this page.
 2. gzip and untar the file and upload the `APIVault` binary to your server
