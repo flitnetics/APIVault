@@ -1,5 +1,5 @@
 # About
-This API Gateway returns a token when you send a POST request to /api/auth with a JSON format like below:
+APIVault is an API Gateway similar to Kong but is much simpler. Of course APIVault does "sub-milliseconds" like Kong as APIVault is written in Go!
 
 **Authentication**
 
