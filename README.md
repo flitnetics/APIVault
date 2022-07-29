@@ -14,7 +14,11 @@ This API Gateway returns a token when you send a POST request to /api/auth with 
 
 Then you will get a reply with JSON Web Token in "access_token" field. Use this in your Authorization header (with "Bearer ").
 
-Of course the hashes stored in your DB must be in BCrypt in order for this to work. The important thing is in the database that you should have is "users" table with "email" and "encrypted_password" columns.
+Of course the hashes stored in your DB must be in BCrypt in order for this to work, although we will make the hash algorithm to be easily configurable in the near future. 
+
+You can also configure any custom *user* table and a custom *column* name for your user login.
+
+For example: some setups users "customers" table - you can customise that. Also *login* maybe stored in `username` column or `email` column
 
 **Registration**
 
@@ -26,10 +30,6 @@ Of course the hashes stored in your DB must be in BCrypt in order for this to wo
   "password: "thepassword"
 }
 ```
-
-Those using Ruby On Rails with Devise, using APIVault should work with your current database out of the box (users schema is the same) as long your still use Bcrypt (not Argon2)
-
-Generic configurable setup for customised configuration other than Ruby On Rails/Devise with different users table/schema is still in WIP.
 
 Detailed information [HERE](http://unrealasia.net/index.html#2019-03-22-12)
 
