@@ -20,7 +20,9 @@ Of course the hashes stored in your DB must be in BCrypt in order for this to wo
 
 You can also configure any custom *user* table and a custom *column* name for your user login.
 
-For example: some setups users "customers" table - you can customise that. Also *login* maybe stored in `username` column or `email` column
+For example: in some setups the users table maybe called "customers" - you can customise that. Also *login* maybe stored in `username` column or `email` column
+
+See the example configuration below.
 
 **Registration**
 
