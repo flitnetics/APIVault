@@ -1,5 +1,7 @@
 # About
-APIVault is an API Gateway similar to Kong but is much simpler. Of course APIVault does "sub-milliseconds" like Kong as APIVault is written in Go!
+APIVault is an API Gateway similar to Kong but is much simpler.
+
+Of course APIVault does "sub-milliseconds" like Kong as APIVault is written in Go!
 
 **Authentication**
 
