@@ -17,7 +17,8 @@ var Config = struct {
 		Ttl         int
         }
 
-	UnixSocket       bool `default:"false"`
+	UnixSocket       bool    `default:"false"`
+        Port             string  `default:"8080"`
 
 	Table struct {
                 Name     string
