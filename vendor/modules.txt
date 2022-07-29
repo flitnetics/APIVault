@@ -1,0 +1,48 @@
+# github.com/BurntSushi/toml v0.3.1
+github.com/BurntSushi/toml
+# github.com/denisenkom/go-mssqldb v0.12.2
+## explicit
+github.com/denisenkom/go-mssqldb
+github.com/denisenkom/go-mssqldb/internal/cp
+github.com/denisenkom/go-mssqldb/internal/decimal
+github.com/denisenkom/go-mssqldb/internal/querytext
+github.com/denisenkom/go-mssqldb/msdsn
+# github.com/dgrijalva/jwt-go v3.2.0+incompatible
+## explicit
+github.com/dgrijalva/jwt-go
+# github.com/go-sql-driver/mysql v1.5.0
+github.com/go-sql-driver/mysql
+# github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe
+github.com/golang-sql/civil
+# github.com/golang-sql/sqlexp v0.1.0
+github.com/golang-sql/sqlexp
+# github.com/jinzhu/configor v1.2.1
+## explicit
+github.com/jinzhu/configor
+# github.com/jinzhu/gorm v1.9.16
+## explicit
+github.com/jinzhu/gorm
+github.com/jinzhu/gorm/dialects/mssql
+github.com/jinzhu/gorm/dialects/mysql
+github.com/jinzhu/gorm/dialects/postgres
+# github.com/jinzhu/inflection v1.0.0
+github.com/jinzhu/inflection
+# github.com/lib/pq v1.1.1
+github.com/lib/pq
+github.com/lib/pq/hstore
+github.com/lib/pq/oid
+github.com/lib/pq/scram
+# goji.io v2.0.2+incompatible
+## explicit
+goji.io
+goji.io/internal
+goji.io/pat
+goji.io/pattern
+# golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
+## explicit
+golang.org/x/crypto/bcrypt
+golang.org/x/crypto/blowfish
+golang.org/x/crypto/md4
+# gopkg.in/yaml.v2 v2.4.0
+## explicit
+gopkg.in/yaml.v2
