@@ -29,7 +29,7 @@ For example: some setups users "customers" table - you can customise that. Also 
 ```json
 {
   "email": "email@domain.com",
-  "password: "thepassword"
+  "password": "thepassword"
 }
 ```
 
