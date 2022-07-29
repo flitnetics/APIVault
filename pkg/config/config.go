@@ -21,7 +21,7 @@ var Config = struct {
 	Table struct {
                 Name     string
 		Column struct {
-                        Username string
+                        Login    string
 			Password string
 		}
 	}

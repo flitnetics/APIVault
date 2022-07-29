@@ -39,8 +39,11 @@ type User struct {
   Id int
   Email string
   Username string
-  EncryptedPassword string `gorm:"column:encrypted_password"`
   Password string `json:"password"`
+}
+
+func (User) TableName() string {
+  return config.Config.Table.Name
 }
 
 type Token struct {
@@ -209,10 +212,8 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 	                        //log.Println("%d", index)
 	                }
 	       } else {
-		       // Unable to process request (should it be 401? because i think this avoids confusion if the 401 below
                        res.Header().Set("Content-Type", "application/json")
-                       res.WriteHeader(http.StatusUnprocessableEntity)
-	               res.Write(nil)
+                       res.WriteHeader(http.StatusUnauthorized)
                }
 	}
 }
@@ -254,7 +255,7 @@ func Registration(res http.ResponseWriter, req *http.Request) {
   password := requestPayload.Password
   email := requestPayload.Email
 
-  if db.DBCon.Where("email = ?", email).First(&user).RecordNotFound() {
+  if db.DBCon.Where(config.Config.Table.Column.Login + " = ?", email).First(&user).RecordNotFound() {
     register := Register{}
     register.Status = "User already registered"
 
@@ -298,7 +299,7 @@ func Authenticate(res http.ResponseWriter, req *http.Request) {
   password := requestPayload.Password
   email := requestPayload.Email
 
-  db.DBCon.Where("email = ?", email).First(&user)
+  db.DBCon.Where(config.Config.Table.Column.Login + " = ?", email).First(&user)
 
   match := CheckPasswordHash(password, user.Password)
   //log.Println("Authentication Verified: ", match)
