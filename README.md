@@ -44,6 +44,7 @@ In a nutshell:
 
 ## Configuration
 There are two steps: You need to configure APIVault and Microservice-specific configuration
+
 Copy `apivault.yml.example` as `apivault.yml` at the same directory as your APIVault binary
 
 Sample configuration:
@@ -72,7 +73,7 @@ table:
 ```
 
 Microservice:
-Copy `microservice.yml.example` to `microservice.yml` at the same directory as your APIVault binary.
+Copy `microservices.yml.example` to `microservices.yml` at the same directory as your APIVault binary.
 
 ```
 ---
