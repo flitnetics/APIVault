@@ -86,7 +86,7 @@ func getSecret(secretKey string) []byte {
 
 // Get the port to listen on
 func getListenAddress() string {
-	port := getEnv("PORT", "8080")
+	port := getEnv("PORT", config.Config.Port)
 	return ":" + port
 }
 
