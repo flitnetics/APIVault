@@ -33,12 +33,60 @@ In a nutshell:
 
 ![summary](https://raw.githubusercontent.com/muhammadn/APIVault/master/API_gateway.png)
 
+**Docker Image is WIP - We intend to release Kubernetes support as that makes sense**
+
 ## Installation steps
 1. Clone this repository
-2. Edit database.yml, include your database credentials, edit secrets.yml (if you have rails you can run `rake secret` to generate one) - this is needed for JWT Token.
-   then edit servers.yml which contains your *hostname* which is used to run APIVault, and the real backend server http://url_backendapi (need http:// or https://) in url_endpoint and your microservice's JWT secrets.
+2. Edit apivault.yml, include your database credentials, secrets.yml (if you have rails you can run `rake secret` to generate one) - this is needed for JWT Token.
+3. Edit microservices.yml which contains your *hostname* which is used to run APIVault, and the real backend server http://url_backendapi (need http:// or https://) in url_endpoint and your microservice's JWT secrets. (NOTE: This is different than APIVault's)
+4. go build
+5. upload APIVault binary to your server and if you want to change the port that binds APIVault runs you can simply run `export PORT="your-port-number"`, example `export PORT="8080"`
 
-   NOTE: You can use either *mysql*, *postgres* and *mssql* adapters, depending how your current data is stored. sqlite is not supported at the moment but you can modify the source to support it.
-3. go build
-4. upload APIVault binary to your server and if you want to change the port that binds APIVault runs you can simply run `export PORT="your-port-number"`, example `export PORT="8080"`
-5. copy config config/ folder in the same directory as APIVault binary in your server and _run APIVault as a normal user privileges (not root!)_
+## Configuration
+There are two steps: You need to configure APIVault and Microservice-specific configuration
+Copy `apivault.yml.example` as `apivault.yml` at the same directory as your APIVault binary
+
+Sample configuration:
+
+```
+---
+# if you want to use socket, set this to true
+# socket will be /tmp/apivault.sock
+unixsocket: false
+db:
+  adapter: mysql
+  host: localhost
+  port: 3306
+  name: api-gateway
+  user: devel
+  password: yourpassword
+# API Gateway JWT Secret (not microservice!)
+secret:
+  key: abc123
+# Database user username/email and password column mapping
+# set what is your table name, login column (example: "email" or "username")
+table:
+  name: users
+  column:
+    login: email
+```
+
+Microservice:
+Copy `microservice.yml.example` to `microservice.yml` at the same directory as your APIVault binary.
+
+```
+---
+# Microservice Specific!
+# Example:
+# I have a website, customer facing running as api.microservice1.domain1.com -
+# Do include port number if necessary like: api.microservice1.domain1.com:8080
+server:
+  - name: first_microservice
+    host: api.microservice1.domain1.com
+    url_endpoint: https://backendprotectedapi.microservice1.domain.com
+    secret: your-microservice-generated-secret-keep-this-secure!
+  - name: second_microservice
+    host: api.microservice2.domain.com
+    url_endpoint: https://backendprotectedapi.microservice2.domain.com
+    secret: your-microservice-generated-secret-keep-this-secure!
+```

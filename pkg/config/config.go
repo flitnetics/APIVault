@@ -17,6 +17,14 @@ var Config = struct {
         }
 
 	UnixSocket       bool `default:"false"`
+
+	Table struct {
+                Name     string
+		Column struct {
+                        Login    string
+			Password string
+		}
+	}
 }{}
 
 func init() {
