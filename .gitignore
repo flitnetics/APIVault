@@ -4,3 +4,4 @@ api-gateway
 /APIVault
 apivault.yml
 microservices.yml
+dist/
