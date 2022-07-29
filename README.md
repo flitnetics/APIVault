@@ -55,12 +55,12 @@ Sample configuration:
 # socket will be /tmp/apivault.sock
 unixsocket: false
 db:
-  adapter: mysql
-  host: localhost
-  port: 3306
-  name: api-gateway
-  user: devel
-  password: yourpassword
+  adapter: mysql         # database adapter can be "mysql", "postgres" or "mssql"
+  host: localhost        # your database host
+  port: 3306             # change this to your database port, 5432 for postgresql and 1433 for mssql
+  name: api-gateway      # your database name
+  user: devel            # your database user
+  password: yourpassword # your database password
 # API Gateway JWT Secret (not microservice!)
 jwt:
   secret: abc123
