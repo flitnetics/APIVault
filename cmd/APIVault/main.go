@@ -56,11 +56,18 @@ type Register struct {
 
 type Servers struct {
   Server []struct {
-    Name string `yaml:"name"`
-    Host string `yaml:"host"`
-    UrlEndpoint string `yaml:"url_endpoint"`
-    Secret string `yaml:"secret"`
+    Name             string   `yaml:"name"`
+    SourceHost       string   `yaml:"source_host"`
+    TargetURL        string   `yaml:"target_url"`
+    Secret           string   `yaml:"secret"`
+    Mappings            []Mappings  `yaml:"mapping"`
   }
+}
+
+type Mappings struct {
+    TargetURL           string `yaml:"target_url"`
+    SourceEndpoint      string `yaml:"source_endpoint"`
+    DestinationEndpoint string `yaml:"destination_endpoint"`
 }
 
 /*
@@ -105,7 +112,7 @@ func logSetup() {
 
 // Log the typeform payload and redirect url
 func logRequestPayload(req *http.Request, proxyUrl string) {
-        log.Printf("request for host: %s, proxy_url: %s\n", req.Host, proxyUrl)
+        //log.Printf("request for host: %s, proxy_url: %s\n", req.Host, proxyUrl)
 }
 
 /*
@@ -113,13 +120,15 @@ func logRequestPayload(req *http.Request, proxyUrl string) {
 */
 
 // Serve a reverse proxy for a given url
-func serveReverseProxy(target string, tokenString string, res http.ResponseWriter, req *http.Request) {
+func serveReverseProxy(target string, sourcePath string, destinationPath string, tokenString string, res http.ResponseWriter, req *http.Request) {
 	// parse the url
 	url, _ := url.Parse(target)
 
+	// remove the prefix of the frontend endpoint
+	path := strings.ReplaceAll(req.URL.Path, sourcePath, "")
+
 	// create the reverse proxy
 	proxy := httputil.NewSingleHostReverseProxy(url)
-
 
 	// Update the headers to allow for SSL redirection
 	req.URL.Host = url.Host
@@ -127,6 +136,7 @@ func serveReverseProxy(target string, tokenString string, res http.ResponseWrite
 	req.Header.Set("X-Forwarded-Host", req.Header.Get("Host"))
 	req.Header.Set("Authorization", "Bearer " + tokenString)
 	req.Host = url.Host
+	req.URL.Path = path + destinationPath
 
 	// Note that ServeHttp is non blocking and uses a go routine under the hood
 	proxy.ServeHTTP(res, req)
@@ -186,10 +196,24 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 		// if APIVault verifies it, continue passing the request
 	        if verified {
 
+			incomingRequest := req.Host + req.URL.Path
+                        //log.Println("incomingRequest: ", incomingRequest)
+
                         for index := 0; index < len(servers.Server); index++ {
-                                if req.Host == servers.Server[index].Host {
-                                        url := servers.Server[index].UrlEndpoint
-		                                log.Println("Host: ", req.Host)
+				//log.Println("Paths: ", servers.Server[index].Mappings)
+			        for _, path := range servers.Server[index].Mappings {
+                                        targetRequest := servers.Server[index].SourceHost + path.SourceEndpoint
+                                        //log.Println("TargetRequest: ", targetRequest)
+                                        //log.Println("incomingRequest: ", incomingRequest)
+
+                                        if strings.Contains(incomingRequest, targetRequest) {
+
+                                                url := path.TargetURL
+						sourcePath := path.SourceEndpoint
+						destinationPath := path.DestinationEndpoint
+
+		                                //log.Println("Host: ", req.Host)
+						//log.Println("URL: ", url)
 
                                                 token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
                                                 //"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
@@ -206,16 +230,16 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
                                                 }
 
                                                 logRequestPayload(req, url)
-                                                serveReverseProxy(url, tokenString, res, req)
-                                }
-
-	                        //log.Println("%d", index)
-	                }
-	       } else {
-                       res.Header().Set("Content-Type", "application/json")
-                       res.WriteHeader(http.StatusUnauthorized)
+                                                serveReverseProxy(url, sourcePath, destinationPath, tokenString, res, req)
+			               }
+		               }
+                       }
+	                       //log.Println("%d", index)
                }
 	}
+	// if all ealse fails, set it to unauthorized
+        res.Header().Set("Content-Type", "application/json")
+        res.WriteHeader(http.StatusUnauthorized)
 }
 
 // Check Usernamd and Password and Authenticate
