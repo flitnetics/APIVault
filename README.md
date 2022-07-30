@@ -83,7 +83,6 @@ table:
 # The header is `X-Authenticity:` which has a HMAC hex value that verifies the client.
 # This is optional and disabled by default
 verification:
-  enabled: false
   shared_key: your_shared_key_keep_it_safe
 ```
 
@@ -108,7 +107,7 @@ server:
       - target_url: http://internal.otp.domain.com
         source_endpoint: /request/otp
         destination_endpoint: /api/auth/otp
-        protect: true # this will force client to pass "X-Authenticity: " header, else reject, useful for unauthenticated endpoint
+        protect: true # this will force client to pass "X-Authenticity: " header, else reject, useful for unauthenticated endpoints. eg. OTP request endpoints
   - name: apivault_dev_host
     source_host: api.dev.apivault.domain1.com
     secret: your-microservice-generated-secret-keep-this-secure!
