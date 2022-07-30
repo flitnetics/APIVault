@@ -89,20 +89,20 @@ server:
     source_host: api.apivault.domain1.com
     secret: your-microservice-generated-secret-keep-this-secure!
     mapping:
-      - target_url: https://internal.customers.backendprotectedapi.microservice1.domain.com
+      - target_url: http://internal.customers.backendprotectedapi.microservice1.domain.com
         source_endpoint: /api/v1/customers
         destination_endpoint: /customers
-      - target_url: https://internal.accounts.backendprotectedapi.microservice1.domain.com
+      - target_url: http://internal.accounts.backendprotectedapi.microservice1.domain.com
         source_endpoint: /api/v1/customers
         destination_endpoint: /accounts
-      - target_url: https://internal.orders.backendprotectedapi.microservice1.domain.com
+      - target_url: http://internal.orders.backendprotectedapi.microservice1.domain.com
         source_endpoint: /api/v1/orders
         destination_endpoint: /orders
   - name: apivault_dev_host
     source_host: api.dev.apivault.domain1.com
     secret: your-microservice-generated-secret-keep-this-secure!
     mapping:
-      - target_url: https://internal.orders.backendprotectedapi.microservice2.domain.com
+      - target_url: http://internal.orders.backendprotectedapi.microservice2.domain.com
         source_endpoint: /api/v1/orders
         destination_endpoint: /orders
 ```
