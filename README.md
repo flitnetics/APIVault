@@ -84,18 +84,25 @@ Microservice:
 Copy `microservices.yml.example` to `microservices.yml` at the same directory as your APIVault binary.
 
 ```
----
-# Microservice Specific!
-# Example:
-# I have a website, customer facing running as api.microservice1.domain1.com -
-# Do include port number if necessary like: api.microservice1.domain1.com:8080
 server:
-  - name: first_microservice
-    host: api.microservice1.domain1.com
-    url_endpoint: https://backendprotectedapi.microservice1.domain.com
+  - name: apivault_main_host
+    source_host: api.apivault.domain1.com
     secret: your-microservice-generated-secret-keep-this-secure!
-  - name: second_microservice
-    host: api.microservice2.domain.com
-    url_endpoint: https://backendprotectedapi.microservice2.domain.com
+    mapping:
+      - target_url: https://internal.customers.backendprotectedapi.microservice1.domain.com
+        source_endpoint: /api/v1/customers
+        destination_endpoint: /customers
+      - target_url: https://internal.accounts.backendprotectedapi.microservice1.domain.com
+        source_endpoint: /api/v1/customers
+        destination_endpoint: /accounts
+      - target_url: https://internal.orders.backendprotectedapi.microservice1.domain.com
+        source_endpoint: /api/v1/orders
+        destination_endpoint: /orders
+  - name: apivault_dev_host
+    source_host: api.dev.apivault.domain1.com
     secret: your-microservice-generated-secret-keep-this-secure!
+    mapping:
+      - target_url: https://internal.orders.backendprotectedapi.microservice2.domain.com
+        source_endpoint: /api/v1/orders
+        destination_endpoint: /orders
 ```
