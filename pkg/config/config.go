@@ -27,6 +27,11 @@ var Config = struct {
 			Password string
 		}
 	}
+
+	Verification struct {
+	        Enabled        bool   `default:"false"`
+		SharedKey      string `yaml:"shared_key"`
+        }
 }{}
 
 func init() {

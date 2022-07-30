@@ -23,6 +23,13 @@ import (
 	"gopkg.in/yaml.v2"
         "os/signal"
 	"syscall"
+
+	// authenticity checks
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
+
+	"strconv"
 )
 
 /*
@@ -115,6 +122,33 @@ func logRequestPayload(req *http.Request, proxyUrl string) {
         //log.Printf("request for host: %s, proxy_url: %s\n", req.Host, proxyUrl)
 }
 
+// API Authenticity Verification
+// This check that the requesting client is authentic (iOS/Android) and not some 
+// bad that has bad intent (like DoS)
+func Authenticity(res http.ResponseWriter, req *http.Request) (bool, error) {
+	digest := req.Header.Get("X-Authenticity")
+        //sharedKey := config.Config.Verification.SharedKey
+	sharedKey := config.Config.Verification.SharedKey
+	//log.Println("SharedKey: ", sharedKey)
+	timestamp := time.Now().Unix()
+	timestampString  := strconv.Itoa(int(timestamp))
+	// remove last 3 characters in the unix epoch timestamp so it has a range of acceptable time
+	timestampTrimmed  := timestampString[:len(timestampString)-2] // remove 3 last characters
+	//log.Println("timestamp: ", timestampTrimmed)
+
+	msg := []byte(timestampTrimmed)
+
+	sig, err := hex.DecodeString(digest)
+	if err != nil {
+		return false, err
+	}
+
+	mac := hmac.New(sha256.New, []byte(sharedKey))
+	mac.Write(msg)
+
+	return hmac.Equal(sig, mac.Sum(nil)), nil
+}
+
 /*
 	Reverse Proxy Logic
 */
@@ -185,6 +219,19 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
                 panic(err)
         }
 
+        // if verification of client is enabled, we check whether it is from a good client and not bad actor
+	// for authenticity of the client
+	authenticity, err := Authenticity(res, req)
+	if err != nil {
+                panic(err)
+	}
+
+	if !authenticity && config.Config.Verification.Enabled == true {
+                res.Header().Set("Content-Type", "application/json")
+                res.WriteHeader(http.StatusUnauthorized)
+	        return
+	}
+
 	tokenString := req.Header.Get("Authorization")
 	if tokenString != "" {
 	        splitToken := strings.Split(tokenString, "Bearer ")
@@ -237,7 +284,7 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 	                       //log.Println("%d", index)
                }
 	}
-	// if all ealse fails, set it to unauthorized
+	// if all else fails, set it to unauthorized
         res.Header().Set("Content-Type", "application/json")
         res.WriteHeader(http.StatusUnauthorized)
 }
