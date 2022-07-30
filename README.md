@@ -78,6 +78,13 @@ table:
   name: users
   column:
     login: email
+# For unprotected endpoints which is public, example: OTP/SMS endpoints which is unprotected
+# This adds another layer of verification for legitimate clients and prevent OTP DoS attacks
+# The header is `X-Authenticity:` which has a HMAC hex value that verifies the client.
+# This is optional and disabled by default
+verification:
+  enabled: false
+  shared_key: your_shared_key_keep_it_safe
 ```
 
 Microservice:
