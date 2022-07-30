@@ -29,7 +29,6 @@ var Config = struct {
 	}
 
 	Verification struct {
-	        Enabled        bool   `default:"false"`
 		SharedKey      string `yaml:"shared_key"`
         }
 }{}

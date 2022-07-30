@@ -67,7 +67,7 @@ type Servers struct {
     SourceHost       string   `yaml:"source_host"`
     TargetURL        string   `yaml:"target_url"`
     Secret           string   `yaml:"secret"`
-    Mappings            []Mappings  `yaml:"mapping"`
+    Mappings         []Mappings  `yaml:"mapping"`
   }
 }
 
@@ -75,6 +75,7 @@ type Mappings struct {
     TargetURL           string `yaml:"target_url"`
     SourceEndpoint      string `yaml:"source_endpoint"`
     DestinationEndpoint string `yaml:"destination_endpoint"`
+    Protect             bool   `yaml:"protect",default:"false"`
 }
 
 /*
@@ -219,17 +220,29 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
                 panic(err)
         }
 
-        // if verification of client is enabled, we check whether it is from a good client and not bad actor
-	// for authenticity of the client
-	authenticity, err := Authenticity(res, req)
-	if err != nil {
-                panic(err)
-	}
+        incomingRequest := req.Host + req.URL.Path
 
-	if !authenticity && config.Config.Verification.Enabled == true {
-                res.Header().Set("Content-Type", "application/json")
-                res.WriteHeader(http.StatusUnauthorized)
-	        return
+        for index := 0; index < len(servers.Server); index++ {
+                for _, path := range servers.Server[index].Mappings {
+                        // if verification of client is enabled, we check whether it is from a good client and not bad actor
+                        // for authenticity of the client
+                        authenticity, err := Authenticity(res, req)
+                        if err != nil {
+                                panic(err)
+                        }
+
+                        targetRequest := servers.Server[index].SourceHost + path.SourceEndpoint
+
+                        if strings.Contains(incomingRequest, targetRequest) {
+
+ 	                        if !authenticity &&
+			           path.Protect == true {
+                                        res.Header().Set("Content-Type", "application/json")
+                                        res.WriteHeader(http.StatusUnauthorized)
+	                                return
+				}
+			}
+		}
 	}
 
 	tokenString := req.Header.Get("Authorization")
@@ -243,7 +256,7 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 		// if APIVault verifies it, continue passing the request
 	        if verified {
 
-			incomingRequest := req.Host + req.URL.Path
+			//incomingRequest := req.Host + req.URL.Path
                         //log.Println("incomingRequest: ", incomingRequest)
 
                         for index := 0; index < len(servers.Server); index++ {
