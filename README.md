@@ -61,6 +61,7 @@ Sample configuration:
 # if you want to use socket, set this to true
 # socket will be /tmp/apivault.sock
 unixsocket: false
+port: 8080 # where APIVault will bind port to
 db:
   adapter: mysql         # database adapter can be "mysql", "postgres" or "mssql"
   host: localhost        # your database host
