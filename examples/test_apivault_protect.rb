@@ -11,7 +11,7 @@ loop do
   auth = OpenSSL::HMAC.hexdigest(digest, key, data)
   puts "digest: #{auth}"
 
-  uri = URI("http://zaihan.local:8080/api/v1/orders")
+  uri = URI("http://api.apivault.domain1.com/api/otp")
   req = Net::HTTP::Get.new(uri)
   req['X-Authenticity'] = auth
   req['Content-Type'] = 'application/json'
