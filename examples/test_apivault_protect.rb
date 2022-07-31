@@ -1,6 +1,8 @@
+#!/usr/bin/env ruby
 require 'uri'
 require 'net/http'
 
+# this is a CLI script to test the API protect feature
 loop do
   key = 'mysharedkey'
   data = Time.now.to_i.to_s
