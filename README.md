@@ -43,7 +43,7 @@ In a nutshell:
 
 ## Installation steps
 1. Download the binaries (according to the version you need) - from the right side of this page.
-2. gzip and untar the file and upload the `APIVault` binary to your server
+2. ungzip and untar the file and upload the `APIVault` binary to your server
 3. Copy apivault.yml.example and microservices.yaml.example to the same folder as your `APIVault` binary
 3. Edit apivault.yml, include your database credentials, jwt secret for APIVault - this is needed for JWT Token.
 4. Edit microservices.yml which contains your *hostname* which is used to run APIVault, and the real backend server http://url_backendapi (need http:// or https://) in url_endpoint and your microservice's JWT secrets. (NOTE: This is different than the one in apivault.yml, to have the same value as your microservice's JWT secret)
