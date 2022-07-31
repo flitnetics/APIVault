@@ -295,11 +295,12 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 		               }
                        }
 	                       //log.Println("%d", index)
+               } else {
+                       res.Header().Set("Content-Type", "application/json")
+                       res.WriteHeader(http.StatusUnauthorized)
+		       return
                }
 	}
-	// if all else fails, set it to unauthorized
-        res.Header().Set("Content-Type", "application/json")
-        res.WriteHeader(http.StatusUnauthorized)
 }
 
 // Check Usernamd and Password and Authenticate
