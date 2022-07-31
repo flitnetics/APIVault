@@ -125,7 +125,7 @@ func logRequestPayload(req *http.Request, proxyUrl string) {
 
 // API Authenticity Verification
 // This check that the requesting client is authentic (iOS/Android) and not some 
-// bad that has bad intent (like DoS)
+// bad actor (doing things like like DoS)
 func Authenticity(res http.ResponseWriter, req *http.Request) (bool, error) {
 	digest := req.Header.Get("X-Authenticity")
         //sharedKey := config.Config.Verification.SharedKey
