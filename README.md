@@ -99,7 +99,7 @@ server:
         source_endpoint: /api/v1/customers
         destination_endpoint: /customers
       - target_url: http://internal.accounts.backendprotectedapi.microservice1.domain.com
-        source_endpoint: /api/v1/customers
+        source_endpoint: /api/v1/accounts
         destination_endpoint: /accounts
       - target_url: http://internal.orders.backendprotectedapi.microservice1.domain.com
         source_endpoint: /api/v1/orders
