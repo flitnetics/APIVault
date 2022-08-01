@@ -3,6 +3,8 @@ APIVault is an API Gateway similar to Kong but is much simpler.
 
 Of course APIVault does "sub-milliseconds" like Kong as APIVault is written in Go!
 
+Supports MySQL, PostgreSQL and Microsoft SQL Server.
+
 **Authentication**
 
 > POST /api/auth
