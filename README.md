@@ -121,3 +121,9 @@ server:
         source_endpoint: /api/v1/orders
         destination_endpoint: /orders
 ```
+
+### Protect mode
+
+Protect mode is designed to protect unauthenticated endpoints (endpoints that do not use JWT Token to allow clients) and it is a simple mitigation strategy. Protect mode **not** designed for Web Applications (like NextJS) in mind but more for mobile devices. We are looking into how we can improve this to provide support for Web Applications as well.
+
+We took the problem with OTP/SMS request API endpoints which is unauthenticated and thus without any form of protection, anyone could DoS attack that endpoint and trigger SMS send-outs and drain all the SMS credits for the provider. This seemed a valid use-case, however, there might other use-cases i have not looked at.
