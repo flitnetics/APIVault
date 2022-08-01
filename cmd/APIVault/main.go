@@ -29,7 +29,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 
-	"strconv"
+	//"strconv"
 )
 
 /*
@@ -128,16 +128,11 @@ func logRequestPayload(req *http.Request, proxyUrl string) {
 // bad actor (doing things like like DoS)
 func Authenticity(res http.ResponseWriter, req *http.Request) (bool, error) {
 	digest := req.Header.Get("X-Authenticity")
+	timestamp := req.Header.Get("X-Date")
         //sharedKey := config.Config.Verification.SharedKey
 	sharedKey := config.Config.Verification.SharedKey
-	//log.Println("SharedKey: ", sharedKey)
-	timestamp := time.Now().Unix()
-	timestampString  := strconv.Itoa(int(timestamp))
-	// remove last 3 characters in the unix epoch timestamp so it has a range of acceptable time
-	timestampTrimmed  := timestampString[:len(timestampString)-2] // remove 3 last characters
-	//log.Println("timestamp: ", timestampTrimmed)
 
-	msg := []byte(timestampTrimmed)
+	msg := []byte(timestamp)
 
 	sig, err := hex.DecodeString(digest)
 	if err != nil {
