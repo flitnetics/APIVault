@@ -84,6 +84,8 @@ table:
 # For unprotected endpoints which is public, example: OTP/SMS endpoints which is unprotected
 # This adds another layer of verification for legitimate clients and prevent OTP DoS attacks
 # The header is `X-Authenticity:` which has a HMAC hex value that verifies the client.
+# You will also need `X-Date: ` which is the timestamp where the backend will compute the HMAC hex value
+# See the example ruby script in examples/ folder
 # This is optional and disabled by default
 verification:
   shared_key: your_shared_key_keep_it_safe
