@@ -112,7 +112,7 @@ server:
       - target_url: http://internal.otp.domain.com
         source_endpoint: /request/otp
         destination_endpoint: /api/auth/otp
-        protect: true # this will force client to pass "X-Authenticity: " header, else reject, useful for unauthenticated endpoints. eg. OTP request endpoints
+        protect: true # this will force client to pass "X-Authenticity: " and "X-Date: " header, else reject, useful for unauthenticated endpoints. eg. OTP request endpoints
   - name: apivault_dev_host
     source_host: api.dev.apivault.domain1.com
     secret: your-microservice-generated-secret-keep-this-secure!
