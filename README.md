@@ -43,6 +43,10 @@ In a nutshell:
 
 ![summary](https://raw.githubusercontent.com/muhammadn/APIVault/master/API_gateway.png)
 
+Note: The backend microservice endpoint needs to accept `Authorization` header which contains the token.
+Example: `Bearer exampletoken`
+
+The backend microservice **do not** need to setup any authentication - it is done by APIVault
 ## Installation steps
 1. Download the binaries (according to the version you need) - from the right side of this page.
 2. ungzip and untar the file and upload the `APIVault` binary to your server
