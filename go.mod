@@ -1,6 +1,6 @@
 module APIVault
 
-go 1.16
+go 1.19
 
 require (
 	github.com/denisenkom/go-mssqldb v0.12.2 // indirect
