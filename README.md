@@ -5,6 +5,8 @@ Of course APIVault does "sub-milliseconds" like Kong as APIVault is written in G
 
 Supports MySQL, PostgreSQL and Microsoft SQL Server.
 
+**There is no need to modify your microservice application to use APIVault**
+
 **Authentication**
 
 > POST /api/auth
